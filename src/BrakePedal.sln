@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrakePedal.Http", "BrakePedal.Http\BrakePedal.Http.csproj", "{F049811F-BC05-4CEE-B329-CE3BF2E2E4BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrakePedal.Redis", "BrakePedal.Redis\BrakePedal.Redis.csproj", "{F2DCB6D2-AC23-4740-BC6F-C3A09D3834AE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrakePedal.Tests", "BrakePedal.Tests\BrakePedal.Tests.csproj", "{CFDC497B-D31B-414B-BA93-ABF5954E1F63}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BrakePedal", "BrakePedal\BrakePedal.csproj", "{878B76C5-C461-4674-B168-3AA569E2E58D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F049811F-BC05-4CEE-B329-CE3BF2E2E4BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F049811F-BC05-4CEE-B329-CE3BF2E2E4BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F049811F-BC05-4CEE-B329-CE3BF2E2E4BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F049811F-BC05-4CEE-B329-CE3BF2E2E4BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F2DCB6D2-AC23-4740-BC6F-C3A09D3834AE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F2DCB6D2-AC23-4740-BC6F-C3A09D3834AE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2DCB6D2-AC23-4740-BC6F-C3A09D3834AE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F2DCB6D2-AC23-4740-BC6F-C3A09D3834AE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CFDC497B-D31B-414B-BA93-ABF5954E1F63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CFDC497B-D31B-414B-BA93-ABF5954E1F63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CFDC497B-D31B-414B-BA93-ABF5954E1F63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CFDC497B-D31B-414B-BA93-ABF5954E1F63}.Release|Any CPU.Build.0 = Release|Any CPU
+		{878B76C5-C461-4674-B168-3AA569E2E58D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{878B76C5-C461-4674-B168-3AA569E2E58D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{878B76C5-C461-4674-B168-3AA569E2E58D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{878B76C5-C461-4674-B168-3AA569E2E58D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package >
+    <metadata>
+        <id>BrakePedal.Redis</id>
+        <title>BrakePedalBrakePedal.Redis</title>
+        <version>1.0.0</version>
+        <authors>Omar Khudeira</authors>
+        <owners>Omar Khudeira</owners>
+        <licenseUrl>https://raw.githubusercontent.com/gopangea/BrakePedal/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/gopangea/BrakePedal</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>The BrakePedal.Redis package contains an implementation of a Redis BrakePedal repository which uses StackExchange.Redis (https://github.com/StackExchange/StackExchange.Redis) for use with the BrakePedal library.
+        </description>
+        <releaseNotes>Initial release.</releaseNotes>
+        <copyright>Copyright 2015</copyright>
+        <tags>throttling rate-limit rate limit redis</tags>
+        <dependencies>
+            <dependency id="BrakePedal" version="1.0.0" />
+            <dependency id="StackExchange.Redis" version="1.0.297" />
+        </dependencies>
+    </metadata>
+    <files>
+        <file src="src/BrakePedal.Redis/bin/Release/BrakePedal.Redis.dll" target="lib/net45" />
+    </files>
+</package>

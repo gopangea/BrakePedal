@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<package >
+    <metadata>
+        <id>BrakePedal</id>
+        <title>BrakePedal</title>
+        <version>1.0.0</version>
+        <authors>Omar Khudeira</authors>
+        <owners>Omar Khudeira</owners>
+        <licenseUrl>https://raw.githubusercontent.com/gopangea/BrakePedal/master/LICENSE</licenseUrl>
+        <projectUrl>https://github.com/gopangea/BrakePedal</projectUrl>
+        <requireLicenseAcceptance>false</requireLicenseAcceptance>
+        <description>Brake Pedal is a general purpose throttling library. The library provides the following features:
+
+- Time based throttling: limit X number of requests over Y time period.
+- Locking: block requests after X attempts over Y time period for Z time period.
+- Decoupled storage: you can use the bundled repositories (in memory) or roll your own.
+
+The BrakePedal.Http package provides code to use the BrakePedal library in a Web API application as an attribute, handler, or filter.
+
+The BrakePedal.Redis package contains an implementation of a Redis BrakePedal repository which uses StackExchange.Redis (https://github.com/StackExchange/StackExchange.Redis) for use with the BrakePedal library.</description>
+        <releaseNotes>Initial release.</releaseNotes>
+        <copyright>Copyright 2015</copyright>
+        <tags>throttling rate-limit rate limit http webapi redis</tags>
+        <dependencies />
+    </metadata>
+    <files>
+        <file src="src/BrakePedal/bin/Release/BrakePedal.dll" target="lib/net45" />
+    </files>
+</package>
