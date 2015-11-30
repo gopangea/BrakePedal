@@ -11,6 +11,7 @@ build:
 	xbuild $(SOLUTIONFILE)
 
 test:
+	pwd
 	mono tools/nuget/nuget.exe restore $(SOLUTIONFILE)
 	xbuild $(TESTPROJECT)
 	# Must use -noshadow switch for the runner to work in Mono as of 4.2.1
