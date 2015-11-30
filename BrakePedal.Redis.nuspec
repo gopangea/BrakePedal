@@ -2,7 +2,7 @@
 <package >
     <metadata>
         <id>BrakePedal.Redis</id>
-        <title>BrakePedalBrakePedal.Redis</title>
+        <title>BrakePedal.Redis</title>
         <version>1.0.0</version>
         <authors>Omar Khudeira</authors>
         <owners>Omar Khudeira</owners>
