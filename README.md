@@ -22,11 +22,11 @@ Current Version: `1.0.0`
 Target Framework: `.NET 4.5 and above` because the main package contains an an in-memory repository implementation based on `System.Runtime.Caching.ObjectCache` which is not compliant with PCL.
 
 - `BrakePedal` is the main package that contains all the logic as well as an in-memory repository.
-	- [nuget.org/packages/BrakePedal](https://www.nuget.org/packages/BrakePedal)
+    - [nuget.org/packages/BrakePedal](https://www.nuget.org/packages/BrakePedal)
 - `BrakePedal.Http` contains code to use the main package in a web application as a handler or filter.
-	- [nuget.org/packages/BrakePedal.Http](https://www.nuget.org/packages/BrakePedal.Http)
+    - [nuget.org/packages/BrakePedal.Http](https://www.nuget.org/packages/BrakePedal.Http)
 - `BrakePedal.Redis` contains an implementation of a Redis throttle repository which uses [StackExchange.Redis](https://github.com/StackExchange/StackExchange.Redis).
-	- [nuget.org/packages/BrakePedal.Redis](https://www.nuget.org/packages/BrakePedal.Redis)
+    - [nuget.org/packages/BrakePedal.Redis](https://www.nuget.org/packages/BrakePedal.Redis)
 
 ###  CI
 
@@ -54,63 +54,63 @@ Let's assume we want to throttle login attempts.
 
 1. Start with a throttle policy:
 
-		var loginPolicy = new ThrottlePolicy()     // An empty constructor uses an in-memory repository
-		{
-			Name = "Login Attempts",				// Give it a name so it can be used for logging purposes.
-			Prefixes = new[] { "login:attempts" },  // Use prefixes to differentiate tracked keys for this policy from others.
-													// It might make sense to get rid of this property and just use the Name property. 
-												
-			// Set the limits for this policy. 
-			// We want to limit logins to 1 per second and 4 per minute.
-			PerSecond = 1,
-			PerMinute = 4
-		};
+        var loginPolicy = new ThrottlePolicy()     // An empty constructor uses an in-memory repository
+        {
+            Name = "Login Attempts",                // Give it a name so it can be used for logging purposes.
+            Prefixes = new[] { "login:attempts" },  // Use prefixes to differentiate tracked keys for this policy from others.
+                                                    // It might make sense to get rid of this property and just use the Name property. 
+                                                
+            // Set the limits for this policy. 
+            // We want to limit logins to 1 per second and 4 per minute.
+            PerSecond = 1,
+            PerMinute = 4
+        };
 
 2. You can also configure the policy to block requests for a predetermined amount of time:
 
-		var loginPolicyWithLocking = new ThrottlePolicy() 
-		{
-			Name = "Login Attempts Locking",
-			Prefixes = new[] { "login:attempts:locking" }, 
-												
-			Limiters = new Limiter[]
-			{
-				new Limiter()
-					.Limit(10)						  // Limit 10 requests,
-					.Over(TimeSpan.FromMinutes(15))     // over a 15 minute period,
-					.LockFor(TimeSpan.FromMinutes(15))  // disallow new requests for 15 minutes
-														// from when the initial limits are hit
-			}
-		};
-				
+        var loginPolicyWithLocking = new ThrottlePolicy() 
+        {
+            Name = "Login Attempts Locking",
+            Prefixes = new[] { "login:attempts:locking" }, 
+                                                
+            Limiters = new Limiter[]
+            {
+                new Limiter()
+                    .Limit(10)                        // Limit 10 requests,
+                    .Over(TimeSpan.FromMinutes(15))     // over a 15 minute period,
+                    .LockFor(TimeSpan.FromMinutes(15))  // disallow new requests for 15 minutes
+                                                        // from when the initial limits are hit
+            }
+        };
+                
 Once instantiated, the policies can be used as follows:
 
 1. Create a key that can uniquely identify the requester. This is used to track the number of requests made:
 
-		var key = new SimpleThrottleKey("username");   // Determine a key to track the requester like user name
-													   // or user ID or IP address etc or a comination of values.
+        var key = new SimpleThrottleKey("username");   // Determine a key to track the requester like user name
+                                                       // or user ID or IP address etc or a combination of values.
 
 2. Login policy with throttling only:
 
-		var check = loginPolicy.Check(key); // NOTE: by default, calling the check method will increment the counter.
-											// If you want to check the status of a policy but not increment the counter
-											// pass in false to the increment parameter as follows.
-											// loginPolicy.Check(key, increment = false); 
-		
-		if (check.IsThrottled)
-		{
-			throw new Exception($"Requests throttled. Maximum allowed { check.Limiter.Count } per { check.Limiter.Period }.");
-		}
+        var check = loginPolicy.Check(key); // NOTE: by default, calling the check method will increment the counter.
+                                            // If you want to check the status of a policy but not increment the counter
+                                            // pass in false to the increment parameter as follows.
+                                            // loginPolicy.Check(key, increment = false); 
+        
+        if (check.IsThrottled)
+        {
+            throw new Exception($"Requests throttled. Maximum allowed { check.Limiter.Count } per { check.Limiter.Period }.");
+        }
 
 3. Login policy with locking:
 
-		var check = loginPolicyWithLocking.Check(key);  
-		
-		if (check.IsLocked)
-		{
-			throw new Exception($"Requests blocked for { check.Limiter.LockDuration }. Maximum allowed { check.Limiter.Count } per { check.Limiter.Period }.");
-		}
-	
+        var check = loginPolicyWithLocking.Check(key);  
+        
+        if (check.IsLocked)
+        {
+            throw new Exception($"Requests blocked for { check.Limiter.LockDuration }. Maximum allowed { check.Limiter.Count } per { check.Limiter.Period }.");
+        }
+    
 ### Http Usage
 
 The `BrakePedal.Http` package provides an `HttpThrottlePolicy` for use in an HTTP environment like APIs and web applications.
@@ -120,46 +120,46 @@ The `HttpThrottlePolicy` expects a throttle key that's built from values in a re
 #### Using as a handler
 
 First define the throttle key we want to use for this policy:
-	
-	// HttpRequestKey is part of the library and contains helpful values like IP address.
-	public class IpRequestKey : HttpRequestKey 
-	{
-		public override void Initialize(HttpRequestMessage request)
-		{
-			base.Initialize(request);
-	
-			string forwardedFor = "X-Forwarded-For"; 
-			if (request.Headers.Contains(forwardedFor))
-			{
-				// Use the forwarded IP address if sitting behind a load balancer
-				string ip = request.Headers.GetValues(forwardedFor).First().Trim();
-				
-				// The base class HttpRequestKey gets the IP from other sources.
-				ClientIp = IPAddress.Parse(ip);
-			}
-		}
-	
-		public override object[] Values
-		{
-			get
-			{
-				return new object[] 
-				{
-					ClientIp
-				};
-			}
-		} 
-	}
-	
+    
+    // HttpRequestKey is part of the library and contains helpful values like IP address.
+    public class IpRequestKey : HttpRequestKey 
+    {
+        public override void Initialize(HttpRequestMessage request)
+        {
+            base.Initialize(request);
+    
+            string forwardedFor = "X-Forwarded-For"; 
+            if (request.Headers.Contains(forwardedFor))
+            {
+                // Use the forwarded IP address if sitting behind a load balancer
+                string ip = request.Headers.GetValues(forwardedFor).First().Trim();
+                
+                // The base class HttpRequestKey gets the IP from other sources.
+                ClientIp = IPAddress.Parse(ip);
+            }
+        }
+    
+        public override object[] Values
+        {
+            get
+            {
+                return new object[] 
+                {
+                    ClientIp
+                };
+            }
+        } 
+    }
+    
 The `IpRequestKey` defined above uses the IP of the request to track the number of requests and locking. Use it to create the policy:
-	
-	var apiRequestPolicy = new HttpThrottlePolicy<IpRequestKey>()
-	{
-		Name = "Requests",
-		Prefixes = new[] { "requests" },
-	
-		PerSecond = 50 // Only allow 50 requests per second per IP
-	};
+    
+    var apiRequestPolicy = new HttpThrottlePolicy<IpRequestKey>()
+    {
+        Name = "Requests",
+        Prefixes = new[] { "requests" },
+    
+        PerSecond = 50 // Only allow 50 requests per second per IP
+    };
 
 Create a delegating handler using the policy above and add it to the request pipeline:
  
@@ -167,42 +167,40 @@ Create a delegating handler using the policy above and add it to the request pip
     {
         public static void Register(HttpConfiguration config)
         {
-			// Other code truncated
-			
-			var throttleHandler = new HttpThrottleHandler(apiRequestPolicy);
+            // Other code truncated
+            
+            var throttleHandler = new HttpThrottleHandler(apiRequestPolicy);
             config.MessageHandlers.Add(throttleHandler);
-			
-			// Other code truncated
-		}
-	}
+            
+            // Other code truncated
+        }
+    }
 
 ### Redis Storage
 
 An in-memory repository (using `System.Runtime.Caching.ObjectCache`) ships with the main package. The `BrakePedal.Redis` package ships with a Redis repository using [StackExchange.Redis](https://github.com/StackExchange/StackExchange.Redis).
 
 The `ThrottlePocliy` constructor accepts an `IThrottleRepository`. To use Redis as storage:
-	
-	var configurationOptions = new ConfigurationOptions
-	{
-		AbortOnConnectFail = false
-	};
-	configurationOptions.EndPoints.Add("redishost", 6379);
-	var connection = ConnectionMultiplexer.Connect(configurationOptions);
-	var redisDatabaseIndex = 2;
-	var database = connection.GetDatabase(2);
-	
-	var repository = new RedisThrottleRepository(database);
-	
-	var apiRequestPolicy = new HttpThrottlePolicy<IpRequestKey>(repository) // Pass in the Redis repository
-	{
-		Name = "Requests",
-		Prefixes = new[] { "requests" },
-	
-		PerSecond = 50 // Only allow 50 requests per second per IP
-	};
+    
+    var configurationOptions = new ConfigurationOptions
+    {
+        AbortOnConnectFail = false
+    };
+    configurationOptions.EndPoints.Add("redishost", 6379);
+    var connection = ConnectionMultiplexer.Connect(configurationOptions);
+    var redisDatabaseIndex = 2;
+    var database = connection.GetDatabase(2);
+    
+    var repository = new RedisThrottleRepository(database);
+    
+    var apiRequestPolicy = new HttpThrottlePolicy<IpRequestKey>(repository) // Pass in the Redis repository
+    {
+        Name = "Requests",
+        Prefixes = new[] { "requests" },
+    
+        PerSecond = 50 // Only allow 50 requests per second per IP
+    };
 
 #### Author and License
 
-Released by the [Pangea engineering team](https://engineering.gopangea.com).
-
-Released under MIT License (see LICENSE file).
+Released by the [Pangea engineering team](http://engineering.gopangea.com) under the MIT License (see LICENSE file).
