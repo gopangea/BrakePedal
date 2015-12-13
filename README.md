@@ -1,6 +1,6 @@
 # Brake Pedal 
 
-`Brake Pedal` is a general purpose throttling and rate limting library. The code was forked from [WebApiThrottle](https://github.com/stefanprodan/WebApiThrottle). It's currently in use at [Pangea](https://gopangea.com).
+`Brake Pedal` is a general purpose throttling and rate limiting library. The code was forked from [WebApiThrottle](https://github.com/stefanprodan/WebApiThrottle). It's currently in use at [Pangea](https://gopangea.com).
 
 The core library provides the following features:
 
