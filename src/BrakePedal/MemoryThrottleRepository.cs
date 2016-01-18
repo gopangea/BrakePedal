@@ -9,6 +9,9 @@ namespace BrakePedal
     {
         private readonly ObjectCache _store;
 
+        // Setup as a function to allow for unit testing
+        public Func<DateTime> CurrentDate = () => DateTime.UtcNow;
+
         public MemoryThrottleRepository(ObjectCache cache)
         {
             _store = cache;
@@ -30,14 +33,22 @@ namespace BrakePedal
         public void AddOrIncrementWithExpiration(IThrottleKey key, Limiter limiter)
         {
             string id = CreateThrottleKey(key, limiter);
-            var item = _store.Get(id) as long?;
-            if (item.HasValue)
-                item = item++;
-            else
-                item = 1;
+            var cacheItem = _store.Get(id) as ThrottleCacheItem;
 
-            DateTime expiration = DateTime.UtcNow.Add(limiter.Period);
-            _store.Set(id, item, expiration);
+            if (cacheItem != null)
+            {
+                cacheItem.Count = cacheItem.Count + 1;
+            }
+            else
+            {
+                cacheItem = new ThrottleCacheItem()
+                {
+                    Count = 1,
+                    Expiration = CurrentDate().Add(limiter.Period)
+                };
+            }
+
+            _store.Set(id, cacheItem, cacheItem.Expiration);
         }
 
         public void SetLock(IThrottleKey key, Limiter limiter)
@@ -46,7 +57,7 @@ namespace BrakePedal
             _store.Remove(throttleId);
 
             string lockId = CreateLockKey(key, limiter);
-            DateTime expiration = DateTime.UtcNow.Add(limiter.LockDuration.Value);
+            DateTime expiration = CurrentDate().Add(limiter.LockDuration.Value);
             _store.Set(lockId, true, expiration);
         }
 
@@ -66,8 +77,9 @@ namespace BrakePedal
         {
             List<object> values = CreateBaseKeyValues(key, limiter);
 
-            string countKey = TimeSpanToFriendlyString(limiter.Period);
-            values.Add(countKey);
+            string lockKeySuffix = TimeSpanToFriendlyString(limiter.LockDuration.Value);
+            values.Add("lock");
+            values.Add(lockKeySuffix);
 
             string id = string.Join(":", values);
             return id;
@@ -77,9 +89,13 @@ namespace BrakePedal
         {
             List<object> values = CreateBaseKeyValues(key, limiter);
 
-            string lockKeySuffix = TimeSpanToFriendlyString(limiter.LockDuration.Value);
-            values.Add("lock");
-            values.Add(lockKeySuffix);
+            string countKey = TimeSpanToFriendlyString(limiter.Period);
+            values.Add(countKey);
+
+            // Using the Unix timestamp to the key allows for better
+            // precision when querying a key from Redis
+            if (limiter.Period.TotalSeconds == 1)
+                values.Add(GetUnixTimestamp());
 
             string id = string.Join(":", values);
             return id;
@@ -109,6 +125,19 @@ namespace BrakePedal
             ifNotZeroAppend(span.Seconds, "s");
 
             return string.Join("", items);
+        }
+
+        private long GetUnixTimestamp()
+        {
+            TimeSpan timeSpan = (CurrentDate() - new DateTime(1970, 1, 1, 0, 0, 0));
+            return (long)timeSpan.TotalSeconds;
+        }
+
+        public class ThrottleCacheItem
+        {
+            public long Count { get; set; }
+
+            public DateTime Expiration { get; set; }
         }
     }
 }

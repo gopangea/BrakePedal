@@ -158,7 +158,7 @@ namespace BrakePedal.Tests
                 policy.Limiters.Add(limit);
 
                 // Act
-                CheckResult result = policy.Check(key);
+                policy.Check(key);
 
                 // Assert
                 repo.Received(1)
@@ -187,7 +187,7 @@ namespace BrakePedal.Tests
                 policy.Limiters.Add(limit);
 
                 // Act
-                CheckResult result = policy.Check(key, false);
+                policy.Check(key, false);
 
                 // Assert
                 repo.Received(0)

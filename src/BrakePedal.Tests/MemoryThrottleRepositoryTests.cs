@@ -1,0 +1,66 @@
+﻿using Xunit;
+using System.Runtime.Caching;
+using System;
+
+namespace BrakePedal.Tests
+{
+    public class MemoryThrottleRepositoryTests
+    {
+        public class AddOrIncrementWithExpirationMethod
+        {
+            [Fact]
+            public void NewObject_SetsCountToOneWithExpiration()
+            {
+                // Arrange
+                var key = new SimpleThrottleKey("test", "key");
+                var limiter = new Limiter()
+                    .Limit(1)
+                    .Over(100);
+                var cache = new MemoryCache("testing_cache");
+                var repository = new MemoryThrottleRepository(cache);
+                repository.CurrentDate = () => new DateTime(2030, 1, 1);
+
+                string id = repository.CreateThrottleKey(key, limiter);
+
+                // Act
+                repository.AddOrIncrementWithExpiration(key, limiter);
+
+                // Assert
+                var item = (MemoryThrottleRepository.ThrottleCacheItem)cache.Get(id);
+                Assert.Equal(1L, item.Count);
+                // We're testing a future date by 100 seconds which is 40 seconds + 1 minute
+                Assert.Equal(new DateTime(2030, 1, 1, 0, 1, 40), item.Expiration);
+            }
+
+            [Fact]
+            public void ExistingObject_IncrementByOneAndSetExpirationDate()
+            {
+                // Arrange
+                var key = new SimpleThrottleKey("test", "key");
+                var limiter = new Limiter()
+                    .Limit(1)
+                    .Over(100);
+                var cache = new MemoryCache("testing_cache");
+                var repository = new MemoryThrottleRepository(cache);
+                string id = repository.CreateThrottleKey(key, limiter);
+
+                var cacheItem = new MemoryThrottleRepository.ThrottleCacheItem()
+                {
+                    Count = 1,
+                    Expiration = new DateTime(2030, 1, 1)
+                };
+
+                cache
+                    .Set(id, cacheItem, cacheItem.Expiration);
+
+                // Act
+                repository.AddOrIncrementWithExpiration(key, limiter);
+
+                // Assert
+                var item = (MemoryThrottleRepository.ThrottleCacheItem)cache.Get(id);
+                Assert.Equal(2L, item.Count);
+                Assert.Equal(new DateTime(2030, 1, 1), item.Expiration);
+            }
+        }
+    }
+}

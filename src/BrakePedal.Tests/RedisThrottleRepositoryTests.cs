@@ -119,7 +119,6 @@ namespace BrakePedal.Tests
                 var db = Substitute.For<IDatabase>();
                 var repository = new RedisThrottleRepository(db);
                 string id = repository.CreateThrottleKey(key, limiter);
-                var transaction = Substitute.For<ITransaction>();
 
                 // Act
                 repository.RemoveThrottle(key, limiter);
