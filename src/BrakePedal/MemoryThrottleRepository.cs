@@ -133,7 +133,8 @@ namespace BrakePedal
             return (long)timeSpan.TotalSeconds;
         }
 
-        public class ThrottleCacheItem
+		[Serializable]
+		public class ThrottleCacheItem
         {
             public long Count { get; set; }
 
