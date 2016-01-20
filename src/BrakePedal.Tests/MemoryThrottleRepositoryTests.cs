@@ -62,5 +62,21 @@ namespace BrakePedal.Tests
                 Assert.Equal(new DateTime(2030, 1, 1), item.Expiration);
             }
         }
+
+        public class ThrottleCacheItemTests
+        {
+            [Fact]
+            public void HasSerializableAttribute()
+            {
+                // Arrange
+                var type = typeof(MemoryThrottleRepository.ThrottleCacheItem);
+
+                // Act
+                var result = type.IsDefined(typeof(SerializableAttribute), false);
+
+                // Assert
+                Assert.True(result);
+            }
+        }
     }
 }

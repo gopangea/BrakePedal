@@ -3,7 +3,7 @@
     <metadata>
         <id>BrakePedal</id>
         <title>BrakePedal</title>
-        <version>1.0.1</version>
+        <version>1.0.2</version>
         <authors>Omar Khudeira</authors>
         <owners>Omar Khudeira</owners>
         <licenseUrl>https://raw.githubusercontent.com/gopangea/BrakePedal/master/LICENSE</licenseUrl>
@@ -18,7 +18,7 @@
 The BrakePedal.Http package provides code to use the BrakePedal library in a Web API application as an attribute, handler, or filter.
 
 The BrakePedal.Redis package contains an implementation of a Redis BrakePedal repository which uses StackExchange.Redis (https://github.com/StackExchange/StackExchange.Redis) for use with the BrakePedal library.</description>
-        <releaseNotes>Fix a few bugs in MemoryThrottleRepository.</releaseNotes>
+        <releaseNotes>Make ThrottleCacheItem serializable.</releaseNotes>
         <copyright>Copyright 2015</copyright>
         <tags>throttling rate-limit rate limit http webapi redis</tags>
         <dependencies />
