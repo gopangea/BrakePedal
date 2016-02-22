@@ -61,6 +61,52 @@ namespace BrakePedal.Tests
                 Assert.Equal(2L, item.Count);
                 Assert.Equal(new DateTime(2030, 1, 1), item.Expiration);
             }
+
+
+            [Fact]
+            public void RetrieveValidThrottleCountFromRepostitory()
+            {
+                // Arrange
+                var key = new SimpleThrottleKey("test", "key");
+                var limiter = new Limiter()
+                    .Limit(1)
+                    .Over(100);
+                var cache = new MemoryCache("testing_cache");
+                var repository = new MemoryThrottleRepository(cache);
+                string id = repository.CreateThrottleKey(key, limiter);
+
+                var cacheItem = new MemoryThrottleRepository.ThrottleCacheItem()
+                {
+                    Count = 1,
+                    Expiration = new DateTime(2030, 1, 1)
+                };
+
+                repository.AddOrIncrementWithExpiration(key, limiter);
+
+                // Act
+                var count = repository.GetThrottleCount(key, limiter);
+
+                // Assert
+                Assert.Equal(count, 1);
+            }
+
+            [Fact]
+            public void ThrottleCountReturnsNullWhenUsingInvalidKey()
+            {
+                // Arrange
+                var key = new SimpleThrottleKey("test", "key");
+                var limiter = new Limiter()
+                    .Limit(1)
+                    .Over(100);
+                var cache = new MemoryCache("testing_cache");
+                var repository = new MemoryThrottleRepository(cache);
+
+                // Act
+                var count = repository.GetThrottleCount(key, limiter);
+
+                // Assert
+                Assert.Equal(count, null);
+            }
         }
 
         public class ThrottleCacheItemTests
