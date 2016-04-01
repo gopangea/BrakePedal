@@ -27,7 +27,14 @@ namespace BrakePedal
         public long? GetThrottleCount(IThrottleKey key, Limiter limiter)
         {
             string id = CreateThrottleKey(key, limiter);
-            return _store.Get(id) as long?;
+
+            var cacheItem = _store.Get(id) as ThrottleCacheItem;
+            if (cacheItem != null)
+            {
+                return cacheItem.Count;
+            }
+
+            return null;
         }
 
         public void AddOrIncrementWithExpiration(IThrottleKey key, Limiter limiter)
