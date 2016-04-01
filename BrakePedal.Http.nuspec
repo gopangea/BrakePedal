@@ -3,7 +3,7 @@
     <metadata>
         <id>BrakePedal.Http</id>
         <title>BrakePedal.Http</title>
-        <version>1.0.2</version>
+        <version>1.0.3</version>
         <authors>Omar Khudeira</authors>
         <owners>Omar Khudeira</owners>
         <licenseUrl>https://raw.githubusercontent.com/gopangea/BrakePedal/master/LICENSE</licenseUrl>
@@ -11,11 +11,11 @@
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
         <description>The BrakePedal.Http package provides code to use the BrakePedal library in a Web API application as an attribute, handler, or filter.
         </description>
-        <releaseNotes>Make ThrottleCacheItem serializable.</releaseNotes>
+        <releaseNotes>Fix bug with MemoryThrottleRepository and GetThrottleCount.</releaseNotes>
         <copyright>Copyright 2015</copyright>
         <tags>throttling rate-limit rate limit http webapi</tags>
         <dependencies>
-            <dependency id="BrakePedal" version="1.0.2" />
+            <dependency id="BrakePedal" version="1.0.3" />
             <dependency id="Microsoft.AspNet.WebApi.Client" version="5.0.0" />
             <dependency id="Microsoft.AspNet.WebApi.Core" version="5.0.0" />
             <dependency id="Newtonsoft.Json" version="6.0.1" />
