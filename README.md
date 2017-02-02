@@ -180,7 +180,7 @@ Create a delegating handler using the policy above and add it to the request pip
 
 An in-memory repository (using `System.Runtime.Caching.ObjectCache`) ships with the main package. The `BrakePedal.Redis` package ships with a Redis repository using [StackExchange.Redis](https://github.com/StackExchange/StackExchange.Redis).
 
-The `ThrottlePocliy` constructor accepts an `IThrottleRepository`. To use Redis as storage:
+The `ThrottlePolicy` constructor accepts an `IThrottleRepository`. To use Redis as storage:
     
     var configurationOptions = new ConfigurationOptions
     {
