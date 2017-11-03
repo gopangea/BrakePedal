@@ -37,7 +37,7 @@
     <Reference Include="System.Runtime.Caching" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GenericKey.cs" />
+    <Compile Include="SimpleThrottleKey.cs" />
     <Compile Include="IThrottleRepository.cs" />
     <Compile Include="IThrottleKey.cs" />
     <Compile Include="IThrottlePolicy.cs" />
