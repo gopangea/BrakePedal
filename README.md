@@ -19,7 +19,7 @@ If you'd like to suggest a name change, feel free to open a PR.
 
 Current Version: `1.0.0`
 
-Target Framework: `.NET 4.5 and above` because the main package contains an an in-memory repository implementation based on `System.Runtime.Caching.ObjectCache` which is not compliant with PCL.
+Target Framework: `.NET 4.5 and above` because the main package contains an in-memory repository implementation based on `System.Runtime.Caching.ObjectCache` which is not compliant with PCL.
 
 - `BrakePedal` is the main package that contains all the logic as well as an in-memory repository.
     - [nuget.org/packages/BrakePedal](https://www.nuget.org/packages/BrakePedal)
