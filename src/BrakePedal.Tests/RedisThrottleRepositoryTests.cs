@@ -57,7 +57,7 @@ namespace BrakePedal.Tests
                 long? result = repository.GetThrottleCount(key, limiter);
 
                 // Assert
-                Assert.Equal(null, result);
+                Assert.Null(result);
             }
 
             [Fact]

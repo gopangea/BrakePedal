@@ -10,7 +10,8 @@ namespace BrakePedal.Http
         {
             const string format = "Requests throttled; maximum allowed {0} per {1}.";
             string message = string.Format(format, checkResult.Limiter.Count, checkResult.Limiter.Period);
-            HttpResponseMessage response = request.CreateResponse((HttpStatusCode)429, message);
+            HttpResponseMessage response = new HttpResponseMessage((HttpStatusCode) 429);
+            response.Content = new StringContent(message);
             response.Headers.RetryAfter = new RetryConditionHeaderValue(checkResult.Limiter.Period);
             return response;
         }
@@ -20,7 +21,8 @@ namespace BrakePedal.Http
             const string format = "Requests throttled; maximum allowed {0} per {1}. Requests blocked for {2}.";
             string message = string.Format(format, checkResult.Limiter.Count, checkResult.Limiter.Period,
                 checkResult.Limiter.LockDuration.Value);
-            HttpResponseMessage response = request.CreateResponse((HttpStatusCode)429, message);
+            HttpResponseMessage response = new HttpResponseMessage((HttpStatusCode) 429);
+            response.Content = new StringContent(message);
             response.Headers.RetryAfter = new RetryConditionHeaderValue(checkResult.Limiter.LockDuration.Value);
             return response;
         }

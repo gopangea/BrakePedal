@@ -4,6 +4,8 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Web.Http.Controllers;
 using System.Web.Http.Filters;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace BrakePedal.Http
 {
@@ -21,7 +23,7 @@ namespace BrakePedal.Http
             get { return true; }
         }
 
-        Task<HttpResponseMessage> IAuthorizationFilter.ExecuteAuthorizationFilterAsync(HttpActionContext actionContext,
+        /*Task<HttpResponseMessage> IAuthorizationFilter.ExecuteAuthorizationFilterAsync(HttpActionContext actionContext,
             CancellationToken cancellationToken, Func<Task<HttpResponseMessage>> continuation)
         {
             if (actionContext == null)
@@ -47,14 +49,14 @@ namespace BrakePedal.Http
                 return Task.FromResult(actionContext.Response);
             }
             return continuation();
-        }
+        }*/
 
-        protected virtual void CheckResult(HttpActionContext actionContext)
+        protected virtual void CheckResult(AuthorizationFilterContext actionContext)
         {
-            HttpRequestMessage request = actionContext.Request;
+            HttpRequest request = actionContext.HttpContext.Request;
             CheckResult checkResult = ThrottlePolicy.Check(request);
             if (checkResult.IsThrottled)
-                actionContext.Response = ThrottledResponse(request, checkResult);
+                actionContext.HttpContext.Response = ThrottledResponse(request, checkResult);
             else if (checkResult.IsLocked)
                 actionContext.Response = LockedResponse(request, checkResult);
         }
@@ -74,6 +76,33 @@ namespace BrakePedal.Http
             var tcs = new TaskCompletionSource<TResult>();
             tcs.SetException(exception);
             return tcs.Task;
+        }
+
+        public void OnAuthorization(AuthorizationFilterContext context)
+        {
+            if (context.ActionDescriptor == null)
+            {
+                throw new ArgumentNullException("actionContext");
+            }
+            if (continuation == null)
+            {
+                throw new ArgumentNullException("continuation");
+            }
+
+            try
+            {
+                CheckResult(context);
+            }
+            catch (Exception e)
+            {
+                return FromError<HttpResponseMessage>(e);
+            }
+
+            if (actionContext.Response != null)
+            {
+                return Task.FromResult(actionContext.Response);
+            }
+            return continuation();
         }
     }
 }

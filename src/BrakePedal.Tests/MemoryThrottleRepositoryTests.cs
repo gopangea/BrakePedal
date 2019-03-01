@@ -1,6 +1,6 @@
 ﻿using Xunit;
-using System.Runtime.Caching;
 using System;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace BrakePedal.Tests
 {
@@ -16,7 +16,7 @@ namespace BrakePedal.Tests
                 var limiter = new Limiter()
                     .Limit(1)
                     .Over(100);
-                var cache = new MemoryCache("testing_cache");
+                var cache = new MemoryCache(new MemoryCacheOptions());
                 var repository = new MemoryThrottleRepository(cache);
                 repository.CurrentDate = () => new DateTime(2030, 1, 1);
 
@@ -40,7 +40,7 @@ namespace BrakePedal.Tests
                 var limiter = new Limiter()
                     .Limit(1)
                     .Over(100);
-                var cache = new MemoryCache("testing_cache");
+                var cache = new MemoryCache(new MemoryCacheOptions());
                 var repository = new MemoryThrottleRepository(cache);
                 string id = repository.CreateThrottleKey(key, limiter);
 
@@ -71,7 +71,7 @@ namespace BrakePedal.Tests
                 var limiter = new Limiter()
                     .Limit(1)
                     .Over(100);
-                var cache = new MemoryCache("testing_cache");
+                var cache = new MemoryCache(new MemoryCacheOptions());
                 var repository = new MemoryThrottleRepository(cache);
                 string id = repository.CreateThrottleKey(key, limiter);
 
@@ -87,7 +87,7 @@ namespace BrakePedal.Tests
                 var count = repository.GetThrottleCount(key, limiter);
 
                 // Assert
-                Assert.Equal(count, 1);
+                Assert.Equal(1, count);
             }
 
             [Fact]
@@ -98,14 +98,14 @@ namespace BrakePedal.Tests
                 var limiter = new Limiter()
                     .Limit(1)
                     .Over(100);
-                var cache = new MemoryCache("testing_cache");
+                var cache = new MemoryCache(new MemoryCacheOptions());
                 var repository = new MemoryThrottleRepository(cache);
 
                 // Act
                 var count = repository.GetThrottleCount(key, limiter);
 
                 // Assert
-                Assert.Equal(count, null);
+                Assert.Null(count);
             }
         }
 

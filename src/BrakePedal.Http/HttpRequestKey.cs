@@ -3,6 +3,8 @@ using System.Net;
 using System.Net.Http;
 using System.ServiceModel.Channels;
 using System.Web;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 
 namespace BrakePedal.Http
 {
@@ -37,9 +39,11 @@ namespace BrakePedal.Http
 
         private IPAddress GetClientIp()
         {
+            
             if (Request.Properties.ContainsKey("MS_HttpContext"))
             {
-                return IPAddress.Parse(((HttpContextBase)Request.Properties["MS_HttpContext"]).Request.UserHostAddress);
+                return ((HttpContext) Request.Properties["MS_HttpContext"]).Features.Get<IHttpConnectionFeature>()
+                    ?.RemoteIpAddress;
             }
 
             if (Request.Properties.ContainsKey(RemoteEndpointMessageProperty.Name))

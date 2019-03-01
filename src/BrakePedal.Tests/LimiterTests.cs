@@ -13,9 +13,8 @@ namespace BrakePedal.Tests
             {
                 var limiter = new Limiter();
                 Limiter returned = limiter.Limit(10);
-
-                limiter.Count.ShouldBeEquivalentTo(10);
-                returned.ShouldBeEquivalentTo(limiter);
+                limiter.Count.Should().Be(10);
+                returned.Should().Be(limiter);
             }
         }
 
@@ -27,7 +26,7 @@ namespace BrakePedal.Tests
                 Limiter limiter = new Limiter()
                     .LockFor(1);
 
-                limiter.LockDuration.ShouldBeEquivalentTo(TimeSpan.FromSeconds(1));
+                limiter.LockDuration.Should().Be(TimeSpan.FromSeconds(1));
             }
 
             [Fact]
@@ -36,7 +35,7 @@ namespace BrakePedal.Tests
                 Limiter limiter = new Limiter()
                     .LockFor(TimeSpan.FromSeconds(1));
 
-                limiter.LockDuration.ShouldBeEquivalentTo(TimeSpan.FromSeconds(1));
+                limiter.LockDuration.Should().Be(TimeSpan.FromSeconds(1));
             }
         }
 
@@ -48,7 +47,7 @@ namespace BrakePedal.Tests
                 Limiter limiter = new Limiter()
                     .Over(10);
 
-                limiter.Period.ShouldBeEquivalentTo(TimeSpan.FromSeconds(10));
+                limiter.Period.Should().Be(TimeSpan.FromSeconds(10));
             }
 
             [Fact]
@@ -57,7 +56,7 @@ namespace BrakePedal.Tests
                 Limiter limiter = new Limiter()
                     .Over(TimeSpan.FromSeconds(10));
 
-                limiter.Period.ShouldBeEquivalentTo(TimeSpan.FromSeconds(10));
+                limiter.Period.Should().Be(TimeSpan.FromSeconds(10));
             }
         }
 
@@ -69,8 +68,8 @@ namespace BrakePedal.Tests
                 Limiter limiter = new Limiter()
                     .PerSecond(10);
 
-                limiter.Count.ShouldBeEquivalentTo(10);
-                limiter.Period.ShouldBeEquivalentTo(TimeSpan.FromSeconds(1));
+                limiter.Count.Should().Be(10);
+                limiter.Period.Should().Be(TimeSpan.FromSeconds(1));
             }
 
             [Fact]
@@ -79,8 +78,8 @@ namespace BrakePedal.Tests
                 Limiter limiter = new Limiter()
                     .PerMinute(10);
 
-                limiter.Count.ShouldBeEquivalentTo(10);
-                limiter.Period.ShouldBeEquivalentTo(TimeSpan.FromMinutes(1));
+                limiter.Count.Should().Be(10);
+                limiter.Period.Should().Be(TimeSpan.FromMinutes(1));
             }
 
             [Fact]
@@ -89,8 +88,8 @@ namespace BrakePedal.Tests
                 Limiter limiter = new Limiter()
                     .PerHour(10);
 
-                limiter.Count.ShouldBeEquivalentTo(10);
-                limiter.Period.ShouldBeEquivalentTo(TimeSpan.FromHours(1));
+                limiter.Count.Should().Be(10);
+                limiter.Period.Should().Be(TimeSpan.FromHours(1));
             }
 
             [Fact]
@@ -99,8 +98,8 @@ namespace BrakePedal.Tests
                 Limiter limiter = new Limiter()
                     .PerDay(10);
 
-                limiter.Count.ShouldBeEquivalentTo(10);
-                limiter.Period.ShouldBeEquivalentTo(TimeSpan.FromDays(1));
+                limiter.Count.Should().Be(10);
+                limiter.Period.Should().Be(TimeSpan.FromDays(1));
             }
         }
     }

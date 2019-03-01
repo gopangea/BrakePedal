@@ -1,25 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Caching;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace BrakePedal
 {
     public class MemoryThrottleRepository : IThrottleRepository
     {
-        private readonly ObjectCache _store;
+        private readonly IMemoryCache _store;
 
         // Setup as a function to allow for unit testing
         public Func<DateTime> CurrentDate = () => DateTime.UtcNow;
 
-        public MemoryThrottleRepository(ObjectCache cache)
+        public MemoryThrottleRepository(IMemoryCache cache)
         {
             _store = cache;
         }
 
         public MemoryThrottleRepository()
         {
-            _store = new MemoryCache("throttleRepository");
+            _store = new MemoryCache(new MemoryCacheOptions());
         }
 
         public object[] PolicyIdentityValues { get; set; }
@@ -71,7 +71,7 @@ namespace BrakePedal
         public bool LockExists(IThrottleKey key, Limiter limiter)
         {
             string lockId = CreateLockKey(key, limiter);
-            return _store.Contains(lockId);
+            return _store.TryGetValue(lockId, out _);
         }
 
         public void RemoveThrottle(IThrottleKey key, Limiter limiter)

@@ -21,8 +21,8 @@ namespace BrakePedal.Tests
                 CheckResult result = policy.Check(key);
 
                 // Assert
-                result.IsThrottled.ShouldBeEquivalentTo(CheckResult.NotThrottled.IsThrottled);
-                result.IsLocked.ShouldBeEquivalentTo(CheckResult.NotThrottled.IsLocked);
+                result.IsThrottled.Should().Be(CheckResult.NotThrottled.IsThrottled);
+                result.IsLocked.Should().Be(CheckResult.NotThrottled.IsLocked);
             }
 
             [Fact]
@@ -46,8 +46,8 @@ namespace BrakePedal.Tests
                 CheckResult result = policy.Check(key);
 
                 // Assert
-                result.IsLocked.ShouldBeEquivalentTo(true);
-                result.Limiter.ShouldBeEquivalentTo(limit);
+                result.IsLocked.Should().Be(true);
+                result.Limiter.Should().Be(limit);
             }
 
             [Fact]
@@ -71,8 +71,8 @@ namespace BrakePedal.Tests
                 CheckResult result = policy.Check(key);
 
                 // Assert
-                result.IsThrottled.ShouldBeEquivalentTo(CheckResult.NotThrottled.IsThrottled);
-                result.IsLocked.ShouldBeEquivalentTo(CheckResult.NotThrottled.IsLocked);
+                result.IsThrottled.Should().Be(CheckResult.NotThrottled.IsThrottled);
+                result.IsLocked.Should().Be(CheckResult.NotThrottled.IsLocked);
             }
 
             [Fact]
@@ -99,8 +99,8 @@ namespace BrakePedal.Tests
                 CheckResult result = policy.Check(key);
 
                 // Assert
-                result.IsThrottled.ShouldBeEquivalentTo(true);
-                result.IsLocked.ShouldBeEquivalentTo(false);
+                result.IsThrottled.Should().Be(true);
+                result.IsLocked.Should().Be(false);
             }
 
             [Fact]
@@ -128,8 +128,8 @@ namespace BrakePedal.Tests
                 CheckResult result = policy.Check(key);
 
                 // Assert
-                result.IsThrottled.ShouldBeEquivalentTo(true);
-                result.IsLocked.ShouldBeEquivalentTo(false);
+                result.IsThrottled.Should().Be(true);
+                result.IsLocked.Should().Be(false);
                 repo.Received(1)
                     .SetLock(key, limit);
                 repo.Received(1)
@@ -235,7 +235,7 @@ namespace BrakePedal.Tests
                 bool result = policy.IsLocked(key, out checkResult);
 
                 // Assert
-                result.ShouldBeEquivalentTo(true);
+                result.Should().Be(true);
             }
         }
 
@@ -267,7 +267,7 @@ namespace BrakePedal.Tests
                 bool result = policy.IsThrottled(key, out checkResult);
 
                 // Assert
-                result.ShouldBeEquivalentTo(true);
+                result.Should().Be(true);
             }
         }
 
@@ -284,11 +284,11 @@ namespace BrakePedal.Tests
 
                 // Assert
                 Limiter limiter = policy.Limiters.First();
-                limiter.Count.ShouldBeEquivalentTo(10);
-                limiter.Period.ShouldBeEquivalentTo(TimeSpan.FromSeconds(1));
+                limiter.Count.Should().Be(10);
+                limiter.Period.Should().Be(TimeSpan.FromSeconds(1));
 
                 // Testing the getter
-                policy.PerSecond.ShouldBeEquivalentTo(limiter.Count);
+                policy.PerSecond.Should().Be(limiter.Count);
             }
 
             [Fact]
@@ -302,11 +302,11 @@ namespace BrakePedal.Tests
 
                 // Assert
                 Limiter limiter = policy.Limiters.First();
-                limiter.Count.ShouldBeEquivalentTo(10);
-                limiter.Period.ShouldBeEquivalentTo(TimeSpan.FromMinutes(1));
+                limiter.Count.Should().Be(10);
+                limiter.Period.Should().Be(TimeSpan.FromMinutes(1));
 
                 // Testing the getter
-                policy.PerMinute.ShouldBeEquivalentTo(limiter.Count);
+                policy.PerMinute.Should().Be(limiter.Count);
             }
 
             [Fact]
@@ -320,11 +320,11 @@ namespace BrakePedal.Tests
 
                 // Assert
                 Limiter limiter = policy.Limiters.First();
-                limiter.Count.ShouldBeEquivalentTo(10);
-                limiter.Period.ShouldBeEquivalentTo(TimeSpan.FromHours(1));
+                limiter.Count.Should().Be(10);
+                limiter.Period.Should().Be(TimeSpan.FromHours(1));
 
                 // Testing the getter
-                policy.PerHour.ShouldBeEquivalentTo(limiter.Count);
+                policy.PerHour.Should().Be(limiter.Count);
             }
 
             [Fact]
@@ -338,11 +338,11 @@ namespace BrakePedal.Tests
 
                 // Assert
                 Limiter limiter = policy.Limiters.First();
-                limiter.Count.ShouldBeEquivalentTo(10);
-                limiter.Period.ShouldBeEquivalentTo(TimeSpan.FromDays(1));
+                limiter.Count.Should().Be(10);
+                limiter.Period.Should().Be(TimeSpan.FromDays(1));
 
                 // Testing the getter
-                policy.PerDay.ShouldBeEquivalentTo(limiter.Count);
+                policy.PerDay.Should().Be(limiter.Count);
             }
         }
     }
