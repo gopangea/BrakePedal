@@ -1,6 +1,7 @@
 ﻿using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace BrakePedal.Http
 {
@@ -12,6 +13,7 @@ namespace BrakePedal.Http
         {
             ThrottlePolicy = throttlePolicy;
         }
+        
 
         protected virtual Task<HttpResponseMessage> CheckResult(HttpRequestMessage request,
             CancellationToken cancellationToken)
@@ -37,6 +39,7 @@ namespace BrakePedal.Http
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request,
             CancellationToken cancellationToken)
         {
+
             return CheckResult(request, cancellationToken);
         }
     }
