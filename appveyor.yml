@@ -15,6 +15,7 @@ dotnet_csproj:
 before_build:
   - dotnet restore
 build:
+  project: src/BrakePedal.sln
   publish_nuget: true
   publish_nuget_symbols: true
   include_nuget_references: true
