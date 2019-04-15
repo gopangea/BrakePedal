@@ -1,0 +1,29 @@
+configuration: Debug
+image:
+  - Ubuntu1804
+  #- Visual Studio 2017
+version: 2.0.{build}-pre
+dotnet_csproj:
+  patch: true
+  file: '**\*.csproj'
+  version: '{version}'
+  package_version: '{version}'
+  assembly_version: '{version}'
+  file_version: '{version}'
+  informational_version: '{version}'
+  #skip_branch_with_pr: true
+build:
+  project: src/BrakePedal.sln
+  publish_nuget: true
+  publish_nuget_symbols: true
+  include_nuget_references: true
+  verbosity: minimal
+
+
+for:
+-
+  branches:
+    only:
+      - master
+  version: 2.0.{build}
+  configuration: Release
