@@ -17,8 +17,10 @@ namespace BrakePedal.Tests
                     .Limit(1)
                     .Over(100);
                 var cache = new MemoryCache("testing_cache");
-                var repository = new MemoryThrottleRepository(cache);
-                repository.CurrentDate = () => new DateTime(2030, 1, 1);
+                var repository = new MemoryThrottleRepository(cache)
+                {
+                    CurrentDate = () => new DateTime(2030, 1, 1)
+                };
 
                 string id = repository.CreateThrottleKey(key, limiter);
 
@@ -50,8 +52,7 @@ namespace BrakePedal.Tests
                     Expiration = new DateTime(2030, 1, 1)
                 };
 
-                cache
-                    .Set(id, cacheItem, cacheItem.Expiration);
+                cache.Set(id, cacheItem, cacheItem.Expiration);
 
                 // Act
                 repository.AddOrIncrementWithExpiration(key, limiter);
@@ -87,7 +88,7 @@ namespace BrakePedal.Tests
                 var count = repository.GetThrottleCount(key, limiter);
 
                 // Assert
-                Assert.Equal(count, 1);
+                Assert.Equal(1, count);
             }
 
             [Fact]
@@ -105,7 +106,7 @@ namespace BrakePedal.Tests
                 var count = repository.GetThrottleCount(key, limiter);
 
                 // Assert
-                Assert.Equal(count, null);
+                Assert.Null(count);
             }
         }
 
