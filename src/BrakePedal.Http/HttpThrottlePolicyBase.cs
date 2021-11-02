@@ -1,4 +1,4 @@
-﻿using System.Net.Http;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace BrakePedal.Http
 {
@@ -14,8 +14,8 @@ namespace BrakePedal.Http
         {
         }
 
-        public abstract bool Check(HttpRequestMessage request, out CheckResult result, bool increment = true);
+        public abstract bool Check(HttpRequest request, out CheckResult result, bool increment = true);
 
-        public abstract CheckResult Check(HttpRequestMessage request, bool increment = true);
+        public abstract CheckResult Check(HttpRequest request, bool increment = true);
     }
 }

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using System.Web.Http.Controllers;
-using System.Web.Http.Filters;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.Net.Http.Headers;
 
 namespace BrakePedal.Http
 {
@@ -16,64 +14,49 @@ namespace BrakePedal.Http
 
         protected IHttpThrottlePolicy ThrottlePolicy { get; private set; }
 
-        public bool AllowMultiple
+        public static bool AllowMultiple
         {
             get { return true; }
         }
 
-        Task<HttpResponseMessage> IAuthorizationFilter.ExecuteAuthorizationFilterAsync(HttpActionContext actionContext,
-            CancellationToken cancellationToken, Func<Task<HttpResponseMessage>> continuation)
+        public void OnAuthorization(AuthorizationFilterContext context)
         {
-            if (actionContext == null)
-            {
-                throw new ArgumentNullException("actionContext");
-            }
-            if (continuation == null)
-            {
-                throw new ArgumentNullException("continuation");
-            }
-
             try
             {
-                CheckResult(actionContext);
+                CheckResult(context);
             }
-            catch (Exception e)
+            catch
             {
-                return FromError<HttpResponseMessage>(e);
+                context.Result = new ForbidResult();
             }
-
-            if (actionContext.Response != null)
-            {
-                return Task.FromResult(actionContext.Response);
-            }
-            return continuation();
         }
 
-        protected virtual void CheckResult(HttpActionContext actionContext)
+        protected virtual void CheckResult(AuthorizationFilterContext actionContext)
         {
-            HttpRequestMessage request = actionContext.Request;
+            HttpRequest request = actionContext.HttpContext.Request;
             CheckResult checkResult = ThrottlePolicy.Check(request);
             if (checkResult.IsThrottled)
-                actionContext.Response = ThrottledResponse(request, checkResult);
+            {
+                actionContext.HttpContext.Response.Headers.Add(HeaderNames.RetryAfter, checkResult.Limiter.Period.ToString());
+
+                actionContext.Result = ThrottledResponse(checkResult);
+            }
             else if (checkResult.IsLocked)
-                actionContext.Response = LockedResponse(request, checkResult);
+            {
+                actionContext.HttpContext.Response.Headers.Add(HeaderNames.RetryAfter, checkResult.Limiter.LockDuration.Value.ToString());
+
+                actionContext.Result = LockedResponse(checkResult);
+            }
         }
 
-        protected virtual HttpResponseMessage ThrottledResponse(HttpRequestMessage request, CheckResult checkResult)
+        protected virtual IActionResult ThrottledResponse(CheckResult checkResult)
         {
-            return HttpResponseHelper.Throttled(request, checkResult);
+            return HttpResponseHelper.Throttled(checkResult);
         }
 
-        protected virtual HttpResponseMessage LockedResponse(HttpRequestMessage request, CheckResult checkResult)
+        protected virtual IActionResult LockedResponse(CheckResult checkResult)
         {
-            return HttpResponseHelper.Locked(request, checkResult);
-        }
-
-        private static Task<TResult> FromError<TResult>(Exception exception)
-        {
-            var tcs = new TaskCompletionSource<TResult>();
-            tcs.SetException(exception);
-            return tcs.Task;
+            return HttpResponseHelper.Locked(checkResult);
         }
     }
 }

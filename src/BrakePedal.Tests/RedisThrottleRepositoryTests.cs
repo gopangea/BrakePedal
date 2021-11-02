@@ -49,15 +49,13 @@ namespace BrakePedal.Tests
                 var repository = new RedisThrottleRepository(db);
                 string id = repository.CreateThrottleKey(key, limiter);
 
-                db
-                    .StringGet(id)
-                    .Returns((long?)null);
+                db.StringGet(id).Returns((long?)null);
 
                 // Act
                 long? result = repository.GetThrottleCount(key, limiter);
 
                 // Assert
-                Assert.Equal(null, result);
+                Assert.Null(result);
             }
 
             [Fact]

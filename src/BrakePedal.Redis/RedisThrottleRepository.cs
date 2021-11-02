@@ -20,8 +20,7 @@ namespace BrakePedal.Redis
         {
             string id = CreateThrottleKey(key, limiter);
             RedisValue value = _db.StringGet(id);
-            long convert;
-            if (long.TryParse(value, out convert))
+            if (long.TryParse(value, out long convert))
                 return convert;
 
             return null;
@@ -62,7 +61,7 @@ namespace BrakePedal.Redis
 
         public string CreateThrottleKey(IThrottleKey key, Limiter limiter)
         {
-            List<object> values = CreateBaseKeyValues(key, limiter);
+            List<object> values = CreateBaseKeyValues(key);
 
             string countKey = TimeSpanToFriendlyString(limiter.Period);
             values.Add(countKey);
@@ -72,23 +71,21 @@ namespace BrakePedal.Redis
             if (limiter.Period.TotalSeconds == 1)
                 values.Add(GetUnixTimestamp());
 
-            string id = string.Join(":", values);
-            return id;
+            return string.Join(":", values);
         }
 
         public string CreateLockKey(IThrottleKey key, Limiter limiter)
         {
-            List<object> values = CreateBaseKeyValues(key, limiter);
+            List<object> values = CreateBaseKeyValues(key);
 
             string lockKeySuffix = TimeSpanToFriendlyString(limiter.LockDuration.Value);
             values.Add("lock");
             values.Add(lockKeySuffix);
 
-            string id = string.Join(":", values);
-            return id;
+            return string.Join(":", values);
         }
 
-        private List<object> CreateBaseKeyValues(IThrottleKey key, Limiter limiter)
+        private List<object> CreateBaseKeyValues(IThrottleKey key)
         {
             List<object> values = key.Values.ToList();
             if (PolicyIdentityValues != null && PolicyIdentityValues.Length > 0)
@@ -97,14 +94,14 @@ namespace BrakePedal.Redis
             return values;
         }
 
-        private string TimeSpanToFriendlyString(TimeSpan span)
+        private static string TimeSpanToFriendlyString(TimeSpan span)
         {
             var items = new List<string>();
-            Action<double, string> ifNotZeroAppend = (value, key) =>
+            void ifNotZeroAppend(double value, string key)
             {
                 if (value != 0)
                     items.Add(string.Concat(value, key));
-            };
+            }
 
             ifNotZeroAppend(span.Days, "d");
             ifNotZeroAppend(span.Hours, "h");
@@ -114,7 +111,7 @@ namespace BrakePedal.Redis
             return string.Join("", items);
         }
 
-        private long GetUnixTimestamp()
+        private static long GetUnixTimestamp()
         {
             TimeSpan timeSpan = (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0));
             return (long)timeSpan.TotalSeconds;
