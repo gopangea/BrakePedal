@@ -36,18 +36,6 @@ namespace BrakePedal.Http
 
         private static IPAddress GetClientIp(HttpRequest request)
         {
-            //if (Request.Properties.ContainsKey("MS_HttpContext"))
-            //{
-            //    return IPAddress.Parse(((HttpContextBase)Request.Properties["MS_HttpContext"]).Request.UserHostAddress);
-            //}
-
-            //if (Request.Properties.ContainsKey(RemoteEndpointMessageProperty.Name))
-            //{
-            //    return
-            //        IPAddress.Parse(
-            //            ((RemoteEndpointMessageProperty)Request.Properties[RemoteEndpointMessageProperty.Name]).Address);
-            //}
-
             return request.HttpContext.Connection.RemoteIpAddress;
 
             throw new InvalidOperationException("Ip not found");
