@@ -117,24 +117,25 @@ The `BrakePedal.Http` package provides an `HttpThrottlePolicy` for use in an HTT
 
 The `HttpThrottlePolicy` expects a throttle key that's built from values in a request object like IP, endpoint, and other HTTP values.
 
-#### Using as a handler
+#### Using as a middleware
 
 First define the throttle key we want to use for this policy:
     
     // HttpRequestKey is part of the library and contains helpful values like IP address.
     public class IpRequestKey : HttpRequestKey 
     {
-        public override void Initialize(HttpRequestMessage request)
+        public override void Initialize(HttpRequest request)
         {
             base.Initialize(request);
-    
-            string forwardedFor = "X-Forwarded-For"; 
-            if (request.Headers.Contains(forwardedFor))
+
+            string forwardedFor = "X-Forwarded-For";
+            if (request.Headers.ContainsKey(forwardedFor))
             {
-                // Use the forwarded IP address if sitting behind a load balancer
-                string ip = request.Headers.GetValues(forwardedFor).First().Trim();
-                
-                // The base class HttpRequestKey gets the IP from other sources.
+                var ip = request.Headers[forwardedFor]
+                    .First()
+                    .Split(',')
+                    .FirstOrDefault()?
+                    .Trim();
                 ClientIp = IPAddress.Parse(ip);
             }
         }
@@ -161,16 +162,15 @@ The `IpRequestKey` defined above uses the IP of the request to track the number 
         PerSecond = 50 // Only allow 50 requests per second per IP
     };
 
-Create a delegating handler using the policy above and add it to the request pipeline:
+Create a middleware or filter using the policy above and add it to the request pipeline:
  
-    public static class WebApiConfig
+    public class Startup
     {
-        public static void Register(HttpConfiguration config)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             // Other code truncated
             
-            var throttleHandler = new HttpThrottleHandler(apiRequestPolicy);
-            config.MessageHandlers.Add(throttleHandler);
+            app.UseMiddleware<ThrottleMiddleware>();
             
             // Other code truncated
         }
